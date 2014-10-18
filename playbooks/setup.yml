@@ -1,6 +1,8 @@
 - hosts: all
   remote_user: rciorba
   sudo: yes
+  vars_files:
+    - ansible_secrets.yml
 
   tasks:
   - name: install docker
@@ -17,6 +19,9 @@
 
   - name: install docker-py
     pip: name=docker-py version=0.4.0
+
+  - name: set docker hub credentials
+    command: docker login -u {{docker_username}} -e {{docker_email}} -p {{docker_password}}
 
   - name: disable selinux
     command: setenforce 0
