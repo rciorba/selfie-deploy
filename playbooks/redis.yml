@@ -1,0 +1,10 @@
+- name: Setup redis
+  hosts: tag_redis
+  sudo: yes
+
+  tasks:
+  - name: mkdir redis logs
+    file: name=/dockervols/redis/logs/ state=directory owner=99 group=99 mode=0777
+
+  - name: start redis
+    docker: image=rciorba/redis name=redis volumes=/dockervols/redis/logs/:/var/log/redis:rw  ports=0.0.0.0:6379:6379 expose=6379 state=running

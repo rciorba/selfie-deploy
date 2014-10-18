@@ -1,0 +1,22 @@
+- hosts: all
+  remote_user: rciorba
+  sudo: yes
+
+  tasks:
+  - name: install docker
+    yum: name=docker state=latest
+
+  - name: install docker-registry
+    yum: name=docker-registry state=latest
+
+  - name: enable docker
+    service: name=docker.service state=started
+
+  - name: install pip
+    easy_install: name=pip
+
+  - name: install docker-py
+    pip: name=docker-py version=0.4.0
+
+  - name: disable selinux
+    command: setenforce 0
