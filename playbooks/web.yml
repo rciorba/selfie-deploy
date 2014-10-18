@@ -1,0 +1,15 @@
+- name: Setup web machines
+  hosts: tag_web
+  sudo: yes
+  vars_files:
+    - ansible_secrets.yml
+
+  tasks:
+  - name: pull latest images
+    command: docker pull rciorba/selfie_server
+
+  - name: kill rails
+    docker: image=rciorba/selfie_server name=selfie_server state=absent
+
+  - name: start rails
+    docker: image=rciorba/selfie_server name=selfie_server ports=0.0.0.0:8080:8080 expose=8080 state=running env="LOCAL_DB_NAME_DEV=,LOCAL_DB_CREDENTIALS_USER={{mysql_username}},LOCAL_DB_CREDENTIALS_PASS={{mysql_password}},LOCAL_DB_NAME_TEST=,LOCAL_DB_NAME=selfie,MYSQL_HOST={{mysql_ip}},RAILS_ENV=production,SECRET_TOKEN={{rails_secret}}" command="/bin/bash -l -c unicorn_rails"
